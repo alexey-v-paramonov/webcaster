@@ -3,6 +3,9 @@
     <b-button variant="success" v-on:click="startStream"
       >Start broadcasting</b-button
     >
+
+    <b-form-input v-model="settings.uri" placeholder="Server URI"></b-form-input>
+
   </div>
 </template>
 
