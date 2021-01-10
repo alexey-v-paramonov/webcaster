@@ -113,7 +113,10 @@
         if (this.model.get("asynchronous")) {
           this.encoder = new Webcast.Encoder.Asynchronous({
             encoder: this.encoder,
-            scripts: ["https://cdn.rawgit.com/webcast/libsamplerate.js/master/dist/libsamplerate.js", "https://cdn.rawgit.com/savonet/shine/master/js/dist/libshine.js", "https://cdn.rawgit.com/webcast/webcast.js/master/lib/webcast.js"]
+            scripts: [
+              "https://cdn.rawgit.com/webcast/libsamplerate.js/master/dist/libsamplerate.js",
+              "https://cdn.rawgit.com/savonet/shine/master/js/dist/libshine.js",
+              "https://cdn.rawgit.com/webcast/webcast.js/master/lib/webcast.js"]
           });
         }
         return this.webcast.connectSocket(this.encoder, this.model.get("uri"));
