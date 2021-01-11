@@ -1,8 +1,20 @@
 <template>
   <div id="app">
-    <b-button variant="success" v-on:click="startStream"
-      >Start broadcasting</b-button
-    >
+    <b-button v-on:click="startStream" v-if="connectionState == 'disconnected'">
+      Start broadcasting
+    </b-button>
+
+    <b-button variant="warning" v-else-if="connectionState == 'connecting'">
+      Connecting...
+    </b-button>
+
+    <b-button variant="success" v-else-if="connectionState == 'connected'">
+      Connected
+    </b-button>
+
+    <b-button variant="danger" v-else-if="connectionState == 'error'">
+      Connection error
+    </b-button>
 
     <b-form-input v-model="settings.uri" placeholder="Server URI"></b-form-input>
 
@@ -19,6 +31,7 @@ export default {
   },
   data: () => {
     return {
+      connectionState: 'disconnected',
       settings: {
         uri: 'ws://source:hackme@localhost:8080/mount',
         bitrate: 128,
@@ -61,11 +74,16 @@ export default {
       }
     }
   },
+  created: function () {
+    this.initAudioContext()
+  },
   methods: {
-    startStream: function () {
-      console.log('Start stream')
-
+    initAudioContext () {
       this.context = new AudioContext()
+    },
+    startStream: function () {
+      console.log('Connecting to: ', this.settings.uri)
+
       this.context.resume()
 
       let Encoder = Webcast.Encoder.Mp3;
@@ -84,8 +102,23 @@ export default {
         ]
       })
       this.webcast = this.context.createWebcastSource(4096, 2)
-
-      this.webcast.connectSocket(this.encoder, this.settings.uri);
+      this.webcast.connectSocket(this.encoder, this.settings.uri)
+      let that = this
+      this.connectionState = 'connecting'
+      let connectionAttemps = 0
+      let connectionInterval = window.setInterval(function () {
+        if (that.webcast.isOpen()) {
+          that.connectionState = 'connected'
+          clearInterval(connectionInterval)
+          return
+        }
+        connectionAttemps += 1
+        // No connection after 5 seconds
+        if (connectionAttemps >= 50) {
+          that.connectionState = 'error'
+          clearInterval(connectionInterval)
+        }
+      }, 100)
     }
   }
 }
