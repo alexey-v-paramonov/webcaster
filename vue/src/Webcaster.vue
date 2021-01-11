@@ -78,9 +78,9 @@ export default {
       this.encoder = new Webcast.Encoder.Asynchronous({
         encoder: this.encoder,
         scripts: [
-          'https://cdn.rawgit.com/webcast/libsamplerate.js/master/dist/libsamplerate.js',
-          'https://cdn.rawgit.com/savonet/shine/master/js/dist/libshine.js',
-          'https://cdn.rawgit.com/webcast/webcast.js/master/lib/webcast.js'
+          'https://streaming.center/dist/webcaster/libsamplerate.js',
+          'https://streaming.center/dist/webcaster/libshine.js',
+          'https://streaming.center/dist/webcaster/webcast.js'
         ]
       })
       this.webcast = this.context.createWebcastSource(4096, 2)
